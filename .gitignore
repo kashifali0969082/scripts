@@ -1,0 +1,63 @@
+# 📦 Standard .gitignore for Node.js + TypeScript/JavaScript + Angular/React
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+out/
+.angular/
+.next/
+.cache/
+.vite/
+.temp/
+tmp/
+coverage/
+
+# IDEs & editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Compiled files
+*.tsbuildinfo
+
+# Dependency directories
+bower_components/
+jspm_packages/
+
+# Git files
+*.orig
+
+# Misc
+*.tgz
+*.lock-wscript
+*.swp
+*.bak
+*.tmp
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: Angular specific
+.husky/
+.project/
+.angular/cache/
