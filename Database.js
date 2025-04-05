@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 function connection() {
-    mongoose
+  mongoose
     .connect(
       "mongodb+srv://kashifali0969082:9bGTtQoSf45u51OT@cluster0.kkwfi7t.mongodb.net/"
     )
@@ -13,7 +13,7 @@ const TransferUserDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: { 
+  name: {
     type: String,
     required: true,
   },
@@ -92,7 +92,7 @@ const LvlSchema = new mongoose.Schema({
     required: true,
   },
   lastUpdate: {
-    type: Number, // Using Date instead of uint256
+    type: Number,
     required: true,
   },
   currentUserLevel: {
@@ -104,11 +104,11 @@ const LvlSchema = new mongoose.Schema({
     required: true,
   },
   virtualUpline: {
-    type: String, // Virtual upline address
+    type: String,
     required: true,
   },
   virtualDirects: {
-    type: [String], // Array of virtual direct downline addresses
+    type: [String],
     default: [],
   },
   virtualId: {
@@ -119,11 +119,7 @@ const LvlSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  history: {
-    type: [
-      
-    ],
-  },
+  history: [[String, String, String, String]],
 });
 const LvlTenSchema = new mongoose.Schema({
   userAddress: {
@@ -131,7 +127,7 @@ const LvlTenSchema = new mongoose.Schema({
     required: true,
   },
   team_Id: {
-    type: Number,
+    type: String,
     required: true,
   },
   totalIncome: {
@@ -143,46 +139,42 @@ const LvlTenSchema = new mongoose.Schema({
     required: true,
   },
   transactionCount: {
-    type: Number,
+    type: String,
     required: true,
   },
   totalDirect: {
-    type: Number,
+    type: String,
     required: true,
   },
   lastUpdate: {
-    type: Number, // Using Date instead of uint256
+    type: String,
     required: true,
   },
   currentUserLevel: {
-    type: Number,
+    type: String,
     required: true,
   },
   firstActivationDate: {
-    type: Number,
+    type: String,
     required: true,
   },
   virtualUpline: {
-    type: String, // Virtual upline address
+    type: String,
     required: true,
   },
   virtualDirects: {
-    type: [String], // Array of virtual direct downline addresses
+    type: [String],
     default: [],
   },
   virtualId: {
-    type: Number,
+    type: String,
     required: true,
   },
   isActive: {
     type: Boolean,
     required: true,
   },
-  history: {
-    type: [
-      
-    ],
-  },
+  history: [[String, String, String, String]],
 });
 const RegistrationData = mongoose.model(
   "RegistrationData",
@@ -191,4 +183,4 @@ const RegistrationData = mongoose.model(
 const LevelsOneToNine = mongoose.model("LvlSchema", LvlSchema);
 const LevelsTen = mongoose.model("LvlTenSchema", LvlTenSchema);
 
-module.exports = { connection, RegistrationData,LevelsOneToNine,LevelsTen };
+module.exports = { connection, RegistrationData, LevelsOneToNine, LevelsTen };

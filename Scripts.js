@@ -1,17 +1,20 @@
 const { ethers } = require("ethers");
-const { registrationContract, registrationContractAbi,UserContract,UserContractAbi,Level10Contract,Level10ContractAbi } = require("./exports");
-const { RegistrationData,LevelsOneToNine,LevelsTen } = require("./Database");
+const {
+  registrationContract,
+  registrationContractAbi,
+  UserContract,
+  UserContractAbi,
+  Level10Contract,
+  Level10ContractAbi,
+} = require("./exports");
+const { RegistrationData, LevelsOneToNine, LevelsTen } = require("./Database");
 const provider = new ethers.JsonRpcProvider("https://rpc.soniclabs.com");
 const contract = new ethers.Contract(
   registrationContract,
   registrationContractAbi,
   provider
 );
-const oneToNine = new ethers.Contract(
-  UserContract,
-  UserContractAbi,
-  provider
-);
+const oneToNine = new ethers.Contract(UserContract, UserContractAbi, provider);
 const TenLevel = new ethers.Contract(
   Level10Contract,
   Level10ContractAbi,
@@ -58,27 +61,13 @@ async function Registration() {
     console.log("error whil getting data from blockchain", error);
   }
 }
-// struct TransferUserData {
-//   address userAddress; // User’s address
-//   uint256 team_Id; // Team ID
-//   uint256 totalIncome; // Total income
-//   uint256 totalVirtualIncome; // Total virtual income
-//   uint256 transactionCount; // Transaction count
-//   uint256 totalDirect; // Total direct referrals
-//   uint256 lastUpdate; // Last update timestamp
-//   uint256 currentUserLevel; // Current level
-//   uint256 firstActivationDate; // First activation timestamp
-//   address virtualUpline; // Virtual upline address
-//   address[] virtualDirects; // Array of virtual direct downlines
-//   uint256 virtualId; // Virtual ID
-//   bool isActive; // Active status
-//   UserHistory[] history; // User history
-// }
-async function LvlOneToNine(){
+
+async function LvlOneToNine() {
   try {
-    
-    
-    const cursor = RegistrationData.find({}, { userAddress: 1, _id: 0 }).cursor(); // Fetch only `userAddress`
+    const cursor = RegistrationData.find(
+      {},
+      { userAddress: 1, _id: 0 }
+    ).cursor(); // Fetch only `userAddress`
     for await (let doc of cursor) {
       console.log("User Address:", doc.userAddress);
       const userData = await oneToNine.users(doc.userAddress);
@@ -88,14 +77,13 @@ async function LvlOneToNine(){
       const stories = await oneToNine.getStories(doc.userAddress);
       const VirtualDirect = await oneToNine.totalVirtualDirect(doc.userAddress);
 
-      console.log("user data = ",stories);
+      console.log("user data = ", stories);
       let virtualDirectsArr = [];
 
-      for(let i=0;i<Number(VirtualDirect);i++){
-        const data = await oneToNine.virtualDirectsOf(doc.userAddress,i);
-        console.log(i,"------",data);
+      for (let i = 0; i < Number(VirtualDirect); i++) {
+        const data = await oneToNine.virtualDirectsOf(doc.userAddress, i);
+        console.log(i, "------", data);
         virtualDirectsArr.push(data);
-
       }
       const lvlEntry = new LevelsOneToNine({
         userAddress: doc.userAddress,
@@ -104,33 +92,37 @@ async function LvlOneToNine(){
         totalVirtualIncome: String(userData[3]),
         transactionCount: Number(userData[4]),
         totalDirect: Number(userData[5]),
-        lastUpdate: Number(userData[6]), 
+        lastUpdate: Number(userData[6]),
         currentUserLevel: Number(userData[7]),
         firstActivationDate: Number(userData[8]),
         virtualUpline: virtuallUpline,
         virtualDirects: virtualDirectsArr,
         virtualId: Number(virtuallIds),
         isActive: isactive,
-        history: stories
-    });
-    await lvlEntry.save();
-    console.log("Data saved for user:",lvlEntry);
-
-  }
+        history: stories.map((entry) => [
+          String(entry[0]),
+          String(entry[1]),
+          String(entry[2]),
+          String(entry[3]),
+        ]),
+      });
+      await lvlEntry.save();
+      console.log("Data saved for user:", lvlEntry);
+    }
     // for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
     //   console.log("User Address:", doc.userAddress);
     //   // You can process each address here (e.g., send transactions, fetch blockchain data, etc.)
     // }
   } catch (error) {
-  console.log("error while getting lvl 1 to 9 data ",error);
-  
+    console.log("error while getting lvl 1 to 9 data ", error);
   }
 }
-async function LvlTenScript(){
+async function LvlTenScript() {
   try {
-    
-    
-    const cursor = RegistrationData.find({}, { userAddress: 1, _id: 0 }).cursor(); // Fetch only `userAddress`
+    const cursor = RegistrationData.find(
+      {},
+      { userAddress: 1, _id: 0 }
+    ).cursor(); // Fetch only `userAddress`
     for await (let doc of cursor) {
       console.log("User Address:", doc.userAddress);
       const userData = await TenLevel.users(doc.userAddress);
@@ -140,14 +132,13 @@ async function LvlTenScript(){
       const stories = await TenLevel.getStories(doc.userAddress);
       const VirtualDirect = await TenLevel.totalVirtualDirect(doc.userAddress);
 
-      console.log("user data = ",stories);
+      console.log("user data = ", stories);
       let virtualDirectsArr = [];
 
-      for(let i=0;i<Number(VirtualDirect);i++){
-        const data = await TenLevel.virtualDirectsOf(doc.userAddress,i);
-        console.log(i,"------",data);
+      for (let i = 0; i < Number(VirtualDirect); i++) {
+        const data = await TenLevel.virtualDirectsOf(doc.userAddress, i);
+        console.log(i, "------", data);
         virtualDirectsArr.push(data);
-
       }
       const lvlEntry = new LevelsTen({
         userAddress: doc.userAddress,
@@ -156,25 +147,30 @@ async function LvlTenScript(){
         totalVirtualIncome: String(userData[3]),
         transactionCount: Number(userData[4]),
         totalDirect: Number(userData[5]),
-        lastUpdate: Number(userData[6]), 
+        lastUpdate: Number(userData[6]),
         currentUserLevel: Number(userData[7]),
         firstActivationDate: Number(userData[8]),
         virtualUpline: virtuallUpline,
         virtualDirects: virtualDirectsArr,
         virtualId: Number(virtuallIds),
         isActive: isactive,
-        history: stories
-    });
-    await lvlEntry.save();
-    console.log("Data saved for user:",lvlEntry);
-  }
+        history: stories.map((entry) => [
+          String(entry[0]),
+          String(entry[1]),
+          String(entry[2]),
+          String(entry[3]),
+        ]),
+      });
+      await lvlEntry.save();
+      console.log("Data saved for user:", stories);
+    }
     // for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {
     //   console.log("User Address:", doc.userAddress);
     //   // You can process each address here (e.g., send transactions, fetch blockchain data, etc.)
     // }
   } catch (error) {
-  console.log("error while getting lvl 1 to 9 data ",error);
-  
+    console.log("error while getting lvl 1 to 9 data ", error);
   }
 }
-module.exports = { Registration,LvlOneToNine,LvlTenScript };
+
+module.exports = { Registration, LvlOneToNine, LvlTenScript };
